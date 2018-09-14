@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edu.mapper.ReviewMapper" >
+  <resultMap id="BaseResultMap" type="com.edu.pojo.Review" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="star" property="star" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="gid" property="gid" jdbcType="INTEGER" />
+    <result column="mid" property="mid" jdbcType="INTEGER" />
+    <result column="flag" property="flag" jdbcType="INTEGER" />
+    <result column="like" property="like" jdbcType="INTEGER" />
+    <result column="parentid" property="parentid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, content, star, createtime, uid, gid, mid, flag, like, parentid
+  </sql>
+  <select id="selectByRid" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_review
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert" parameterType="com.edu.pojo.Review" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_review (content, star, createtime, 
+      uid, gid, mid, flag, 
+      like, parentid)
+    values (#{content,jdbcType=VARCHAR}, #{star,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{uid,jdbcType=INTEGER}, #{gid,jdbcType=INTEGER}, #{mid,jdbcType=INTEGER}, #{flag,jdbcType=INTEGER}, 
+      #{like,jdbcType=INTEGER}, #{parentid,jdbcType=INTEGER})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.edu.pojo.Review" >
+    update t_review
+    set content = #{content,jdbcType=VARCHAR},
+      star = #{star,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      uid = #{uid,jdbcType=INTEGER},
+      gid = #{gid,jdbcType=INTEGER},
+      mid = #{mid,jdbcType=INTEGER},
+      flag = #{flag,jdbcType=INTEGER},
+      like = #{like,jdbcType=INTEGER},
+      parentid = #{parentid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

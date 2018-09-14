@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edu.mapper.MenuMapper" >
+  <resultMap id="BaseResultMap" type="com.edu.pojo.Menu" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="video" property="video" jdbcType="VARCHAR" />
+    <result column="material" property="material" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="collect" property="collect" jdbcType="INTEGER" />
+    <result column="star" property="star" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="DATE" />
+    <result column="flag" property="flag" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, uid, video, content, collect, star, createtime, flag
+  </sql>
+  <select id="selectByMid" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_menu
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert" parameterType="com.edu.pojo.Menu" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_menu (uid, video, material,content,menutype,
+      collect, star, createtime, 
+      flag)
+    values (#{uid,jdbcType=INTEGER}, #{video,jdbcType=VARCHAR},#{material}, #{content,jdbcType=VARCHAR},
+      #{menutype,jdbcType=INTEGER},#{collect,jdbcType=INTEGER}, #{star,jdbcType=INTEGER}, #{createtime,jdbcType=DATE},
+      #{flag,jdbcType=INTEGER})
+  </insert>
+
+  <update id="updateByMid" parameterType="com.edu.pojo.Menu" >
+    update t_menu
+    set
+      flag = #{flag}
+    where id = #{id}
+  </update>
+
+  <select id="selectByPage" resultType="com.edu.commons.vo.PageVo">
+    select m.*, r.count(*) from t_menu m left join t_review r on m.id = r.mid
+    where m.title like '%#{title}%'
+    order by
+    <if test="#{flag}=2">
+      r.count(*)
+    </if>
+    <if test="#{flag}=3">
+      m.star
+    </if>
+    limit #{page},#{limit}
+  </select>
+
+  <select id="selectByUid" resultType="com.edu.pojo.Menu">
+    select  *from t_menu where uid=#{uid} and flag=#{flag}
+  </select>
+
+  <update id="updatecollect">
+    update t_menu set collect = collect + 1 where id = #{id}
+  </update>
+
+  <select id="selectByType" resultType="com.edu.pojo.Menu">
+    select * from t_menu where menutype = #{tid} limit #{page},#{limit}
+  </select>
+</mapper>
